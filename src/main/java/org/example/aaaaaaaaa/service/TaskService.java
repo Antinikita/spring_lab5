@@ -7,6 +7,9 @@ import org.example.aaaaaaaaa.repository.AppUserRepository;
 import org.example.aaaaaaaaa.repository.CategoriesRepository;
 import org.example.aaaaaaaaa.repository.TasksRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +23,13 @@ public class TaskService {
     @Autowired
     CategoriesRepository categoriesRepository;
 
-    public List<Tasks> getTasksByUser(String username) {
+    public Page<Tasks> getTasksByUser(String username, Pageable pageable) {
         AppUser user=appUserRepository.findByUsername(username).orElseThrow(()->new RuntimeException("User not found"));
-        return tasksRepository.findByAppUser(user);
+        return tasksRepository.findByAppUser(user,pageable);
+    }
+    public Page<Tasks> getTasksByUser(String username,String title, Pageable pageable) {
+        AppUser user=appUserRepository.findByUsername(username).orElseThrow(()->new RuntimeException("User not found"));
+        return tasksRepository.findByAppUser(user,title,pageable);
     }
     public Tasks addTask( String username,Tasks task, Long categoryId) {
         AppUser user=appUserRepository.findByUsername(username).orElseThrow(()->new RuntimeException("User not found"));
